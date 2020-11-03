@@ -1,11 +1,22 @@
 import React from 'react'
 import Link from 'next/link'
+import styles from '../styles/Home.module.css'
 
-export default function Header({ children }) {
+export default function Header() {
   return (
-    <header>
+    <header className={styles.header}>
       <Link href="/">
-        <a>Home</a>
+        <a className={styles.header_element}>
+          <img
+            src="/favicon.ico"
+            alt="image"
+          />
+        </a>
+      </Link>
+      <Link href="/LogIn">
+        <a className={styles.header_element}>
+          Log in
+        </a>
       </Link>
     </header>
   )
