@@ -6,8 +6,27 @@ TODO: a few sentences describing your project
 
 view our website [here]()
 
-### building
-The application is developed using Next.js: [Next.js Documentation](https://nextjs.org/docs), [Next.js Documentation](https://nextjs.org/docs)
+### deployment
+First, build the production application in the `.next` folder:
+
+```bash
+npm run build
+# or
+yarn build
+```
+
+Then, start a Node.js server:
+
+```bash
+npm run start
+# or
+yarn start
+```
+
+Check out  [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+### development
+The application is developed using Next.js: [Next.js Documentation](https://nextjs.org/docs)
 
 First, run the development server:
 
@@ -18,11 +37,6 @@ yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-### deployment
-The easiest way to deploy a Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out  [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 ### usage
 TODO: provide examples on how to use your program
