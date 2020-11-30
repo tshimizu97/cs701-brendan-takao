@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 
@@ -22,22 +22,22 @@ export default function LogIn() {
             Start learning with your tutor!
           </p>
         </div>
+
         <div className={styles.half}>
           <form
             className={styles.log_in}
-            onSubmit={console.log('User Name: ' + userName + '\nPassword: ' + password)}
           >
             <input
               type="text"
               placeholder="User Name"
               className={styles.input_bar}
-              onChange={(input) => setUserName(userName + input)}
+              onChange={(input) => setUserName(input.target.value)}
             />
             <input
               type="text"
               placeholder="Password"
               className={styles.input_bar}
-              onChange={(input) => setUserName(password + input)}
+              onChange={(input) => setPassword(input.target.value)}
             />
             <input
               type="submit"
