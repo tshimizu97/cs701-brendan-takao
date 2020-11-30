@@ -15,6 +15,7 @@ export default function Header() {
   }
 
   useEffect(()=>{
+    console.log("App rerendered!");
     setLoggedIn(localStorage.getItem("loggedIn"))
     setUser(localStorage.getItem("user"));
   }, [])

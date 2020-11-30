@@ -3,17 +3,9 @@ import '../styles/globals.css'
 import Header from '../components/Header'
 
 function MyApp({ Component, pageProps }) {
-  const [user, setUser] = useState();
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  useEffect(()=>{
-    setLoggedIn(localStorage.getItem("loggedIn"))
-    setUser(localStorage.getItem("user"));
-  }, [])
-
   return (
     <>
-      <Header/>
+      <Header />
       <Component {...pageProps} />
     </>
   )
