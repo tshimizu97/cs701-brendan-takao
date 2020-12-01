@@ -7,6 +7,10 @@
   flex-direction: column;
 }
 
+.error_message {
+  color: red;
+}
+
 .main {
   padding: 5rem 0;
   flex: 1;
@@ -205,5 +209,11 @@
 }
 
 .header_element {
+  padding: 1rem;
+}
+
+.header_text {
+  background:none;
+  border:none;
   padding: 1rem;
 }
