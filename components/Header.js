@@ -19,6 +19,7 @@ export default function Header(props) {
   }, [])
 
   if (props.userInfo.loggedIn) {
+    // if logged in
     return (
       <header className={styles.header}>
         <Link href="/">
@@ -29,13 +30,22 @@ export default function Header(props) {
             />
           </a>
         </Link>
-        <button onClick={logOut}>
+        <button
+          className={styles.header_text}
+        >
+          My Profile
+        </button>
+        <button
+          className={styles.header_text}
+          onClick={logOut}
+        >
           Log out
         </button>
       </header>
     )
   }
 
+  // if not logged in
   else {
     return (
       <header className={styles.header}>

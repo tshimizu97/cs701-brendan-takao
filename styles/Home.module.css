@@ -211,3 +211,9 @@
 .header_element {
   padding: 1rem;
 }
+
+.header_text {
+  background:none;
+  border:none;
+  padding: 1rem;
+}
