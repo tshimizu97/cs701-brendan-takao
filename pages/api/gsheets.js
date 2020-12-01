@@ -1,6 +1,6 @@
 const {google} = require('googleapis');
 const sheets = google.sheets('v4');
-const keys = require('./keys.json');
+const keys = require('../../keys.json');
 
 main();
 
@@ -13,7 +13,7 @@ async function main() {
 async function getNumProfiles(client) {
     const request = {
         spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
-        range: 'Profiles!P1:P1',  
+        range: 'Profiles!P1:P1',
         auth: client,
     };
 
@@ -24,9 +24,9 @@ async function getNumProfiles(client) {
     }
 }
 
-async function getData(client) {
+export async function getData(client) {
     // const authClient = await authorize();
-    
+
     let numProfiles = await getNumProfiles(client).then(function(result) { return result; });
     let lastRow = parseFloat(numProfiles) + 1;
 
@@ -39,7 +39,7 @@ async function getData(client) {
 
     const request = {
         spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
-        range: range,  
+        range: range,
         auth: client,
     };
 
@@ -52,9 +52,9 @@ async function getData(client) {
 
 async function addProfile(profile) {
     const authClient = await authorize();
-    
+
     let numProfiles = await getNumProfiles(authClient);
-    
+
     let lastRow = parseFloat(numProfiles) + 1;
     let range;
     try {
@@ -62,10 +62,10 @@ async function addProfile(profile) {
     } catch(err) {
         console.error(err);
     }
-    
+
     const appendRequest = {
         spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
-        range: range,  
+        range: range,
         valueInputOption: 'RAW',
         auth: authClient,
         resource: {
@@ -82,7 +82,7 @@ async function addProfile(profile) {
 
     const updateRequest = {
         spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
-        range: 'Profiles!P1:P1',  
+        range: 'Profiles!P1:P1',
         valueInputOption: 'RAW',
         auth: authClient,
         resource: {
@@ -127,11 +127,11 @@ async function deleteProfile(id) {
         }
         const deleteRequest = {
             spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
-            range: range,  
+            range: range,
             valueInputOption: 'RAW',
             auth: authClient,
             resource: {
-                values: profiles 
+                values: profiles
             }
         };
 
@@ -144,7 +144,7 @@ async function deleteProfile(id) {
 
         const numProfRequest = {
             spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
-            range: 'Profiles!P1:P1',  
+            range: 'Profiles!P1:P1',
             valueInputOption: 'RAW',
             auth: authClient,
             resource: {
@@ -163,10 +163,10 @@ async function deleteProfile(id) {
     profiles = await getData(authClient);
     console.log('After deletion');
     logProfiles(profiles);
- 
+
 }
 
-async function authorize() {
+export async function authorize() {
     let authClient = new google.auth.JWT(
         keys.client_email,
         null,

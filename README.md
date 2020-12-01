@@ -44,5 +44,8 @@ TODO: provide examples on how to use your program
 ### limitations
 TODO: what are some known limitations users should be aware of when running your program?
 
+### requirement
+npm, nextjs, googleapis
+
 ### references
 TODO: what are some important resources for those who want to look further (papers that influenced your work + your final report)
