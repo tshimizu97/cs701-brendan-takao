@@ -1,14 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect} from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import cn from 'classnames'
 
-export default function Home() {
-  const states = {tutor: false, tutee: false, writing: false, math: false,
+export default function Home(props) {
+  const initStates = {tutor: false, tutee: false, writing: false, math: false,
                   physics: false, chemistry: false, computer_science: false,
                   other_sciences: false, spanish: false, french: false,
                   mandarin_chinese: false, other_languages: false};
-  const [state, setState] = useState(states);
+  const [state, setState] = useState(initStates);
+
+  useEffect(()=>{
+    // check if the user has logged in
+    props.setUserInfo({...props.userInfo,
+      loggedIn: localStorage.getItem("loggedIn")});
+  }, [])
 
   return (
     <div className={styles.container}>

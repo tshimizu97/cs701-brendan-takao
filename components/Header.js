@@ -1,26 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect} from 'react'
+import UserContext from '../pages/_app'
 import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 
-export default function Header() {
-  const [user, setUser] = useState();
-  const [loggedIn, setLoggedIn] = useState(false);
-
+export default function Header(props) {
   /* function to log out the user */
   const logOut = event => {
-    event.preventDefault();
-    setUser();
-    setLoggedIn(false);
+    props.setUserInfo({loggedIn: false});
     localStorage.clear();
   }
 
   useEffect(()=>{
-    console.log("App rerendered!");
-    setLoggedIn(localStorage.getItem("loggedIn"))
-    setUser(localStorage.getItem("user"));
+    const storaged = {
+      loggedIn: localStorage.getItem("loggedIn"),
+      user: localStorage.getItem("user")
+    }
+    props.setUserInfo(storaged);
   }, [])
 
-  if (loggedIn) {
+  if (props.userInfo.loggedIn) {
     return (
       <header className={styles.header}>
         <Link href="/">
@@ -32,7 +30,7 @@ export default function Header() {
           </a>
         </Link>
         <button onClick={logOut}>
-          Click me!
+          Log out
         </button>
       </header>
     )

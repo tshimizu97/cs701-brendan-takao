@@ -7,25 +7,27 @@ export default function LogIn() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [ifError, setIfError] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
   const onSubmit = async event => {
     /* This function validates the log-in credientials and update log-in status. */
+    event.preventDefault();
 
     // here, instead of setting if_success always as true, call a backend API to get if entered credential is valid or not
     // Can you do this, Brendan?
     const if_success  = true;
 
     if (if_success) {
+      // store the result to the local storage
       localStorage.setItem('loggedIn', if_success);
       localStorage.setItem('user', userName);
+      // redirect to the search page
       router.push('/');
     }
     else {
       // display the error message
       setIfError(true);
     }
-    event.preventDefault();
   }
 
   return (
