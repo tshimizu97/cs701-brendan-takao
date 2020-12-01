@@ -2,6 +2,7 @@ import React, { useState, useEffect} from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import cn from 'classnames'
+//import { authorize, getData } from './api/gsheets'
 
 export default function Home(props) {
   const initStates = {tutor: false, tutee: false, writing: false, math: false,
@@ -15,6 +16,15 @@ export default function Home(props) {
     props.setUserInfo({...props.userInfo,
       loggedIn: localStorage.getItem("loggedIn")});
   }, [])
+
+  async function search(state) {
+    // ideally don't do Google sheet anthentication twice
+    //const authClient = await authorize();
+
+    //const data = await getData(authClient);
+    // do filtering
+    // return filtered results
+  }
 
   return (
     <div className={styles.container}>
