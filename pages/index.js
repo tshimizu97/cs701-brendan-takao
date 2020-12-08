@@ -5,7 +5,7 @@ import cn from 'classnames'
 //import { search } from './api/gsheets' // this search function should async
 
 export default function Home(props) {
-  const initStates = {tutor: false, tutee: false, writing: false, math: false,
+  const initStates = {type: "tutor", tutee: false, writing: false, math: false,
                   physics: false, chemistry: false, computer_science: false,
                   other_sciences: false, spanish: false, french: false,
                   mandarin_chinese: false, other_languages: false};
@@ -42,13 +42,13 @@ export default function Home(props) {
             <h3>I'm looking for:</h3>
             <p>
               <button type='button'
-               onClick={() => setState({...state, tutor: (state['tutor'] === false)})}
-               className={cn({[styles.search_option]: state['tutor'] === false,
-                              [styles.option_selected]: state['tutor'] === true})}>Tutor</button>
+               onClick={() => setState({...state, type: "tutor"})}
+               className={cn({[styles.search_option]: state['type'] === "tutee",
+                              [styles.option_selected]: state['type'] === "tutor"})}>Tutor</button>
               <button type='button'
-               onClick={() => setState({...state, tutee: (state['tutee'] === false)})}
-               className={cn({[styles.search_option]: state['tutee'] === false,
-                              [styles.option_selected]: state['tutee'] === true})}>Tutee</button>
+               onClick={() => setState({...state, type: "tutee"})}
+               className={cn({[styles.search_option]: state['type'] === "tutor",
+                              [styles.option_selected]: state['type'] === "tutee"})}>Tutee</button>
             </p>
           </div>
           <div className={styles.search_element}>
