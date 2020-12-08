@@ -5,7 +5,7 @@ import cn from 'classnames'
 //import { search } from './api/gsheets'
 
 export default function Home(props) {
-  const initStates = {type: "tutor", tutee: false, writing: false, math: false,
+  const initStates = {type: "tutor", writing: false, math: false,
                   physics: false, chemistry: false, computer_science: false,
                   other_sciences: false, spanish: false, french: false,
                   mandarin_chinese: false, other_languages: false};
