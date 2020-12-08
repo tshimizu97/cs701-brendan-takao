@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
+import Link from 'next/link'
 
 export default function LogIn() {
   const [userName, setUserName] = useState("");
@@ -40,7 +41,7 @@ export default function LogIn() {
       <main className={styles.main_horizontal}>
         <div className={styles.half}>
           <h1 className={styles.title}>
-            [Project Name]
+            TutorMatch
           </h1>
           <p className={styles.description}>
             Start learning with your tutor!
@@ -59,7 +60,7 @@ export default function LogIn() {
               onChange={(input) => setUserName(input.target.value)}
             />
             <input
-              type="text"
+              type="password"
               placeholder="Password"
               className={styles.input_bar}
               onChange={(input) => setPassword(input.target.value)}
@@ -69,6 +70,11 @@ export default function LogIn() {
               value="Log In"
               className={styles.submit_button}
             />
+          <Link href="/SignUp">
+              <a className={styles.header_element}>
+                Or Sign Up!
+              </a>
+            </Link>
             {ifError &&
               (<span className={styles.error_message}>
                 Log-in Crediential was incorrect.

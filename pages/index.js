@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import cn from 'classnames'
-//import { authorize, getData } from './api/gsheets'
+//import { search } from './api/gsheets' // this search function should async
 
 export default function Home(props) {
   const initStates = {tutor: false, tutee: false, writing: false, math: false,
@@ -18,24 +18,19 @@ export default function Home(props) {
   }, [])
 
   async function search(state) {
-    // ideally don't do Google sheet anthentication twice
-    //const authClient = await authorize();
-
-    //const data = await getData(authClient);
-    // do filtering
-    // return filtered results
+    // just here until back-end is built
   }
 
   return (
     <div className={styles.container}>
       <Head>
-        <title>[Project Name]</title> {/* Need to decide the project name*/}
+        <title>TutorMatch</title>
         <link rel="icon" href="/favicon.ico"/> {/* Need to chnge the icon*/}
       </Head>
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          [Project Name] {/* Need to decide the project name*/}
+          TutorMatch {/* Need to decide the project name*/}
         </h1>
 
         <p className={styles.description}>
