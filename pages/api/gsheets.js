@@ -4,6 +4,22 @@ const keys = require('../../keys.json');
 
 main();
 
+async function main() {
+    // let testProfile = [['tutee', 'Maria', 'Santiago', '14', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', 'abcdefgh']];
+    // await addProfile(testProfile);
+    // deleteProfile('abcdefgh');
+    let testState = {type: "tutee", writing: false, math: true,
+                  physics: false, chemistry: false, computer_science: false,
+                  other_sciences: false, spanish: false, french: false,
+                  mandarin_chinese: false, other_languages: false};
+    // let results = await search(testState);
+    // logProfiles(results);
+    let testUserPass = ['tshimizu', 'zxcvb'];
+    let validation = await validateUser(testUserPass);
+    console.log(validation);
+
+}
+
 async function search(state) {
 
     // Parse the "state" object into an array for searching
@@ -59,17 +75,62 @@ function boolAsInt(bool) {
     return '0';
 }
 
-async function main() {
-    // let testProfile = [['tutee', 'Maria', 'Santiago', '14', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', 'abcdefgh']];
-    // await addProfile(testProfile);
-    // deleteProfile('abcdefgh');
-    let testState = {type: "tutee", writing: false, math: true,
-                  physics: false, chemistry: false, computer_science: false,
-                  other_sciences: false, spanish: false, french: false,
-                  mandarin_chinese: false, other_languages: false};
-    let results = await search(testState);
-    logProfiles(results);
+// Validates a provided username and password combination, returning profile row in sheets if valid, -1 otherwise 
+// INPUT: "info" is an array [username, password]
+async function validateUser(info) {
+    let authClient = await authorize();
+    let userPassArray = await getUserPass(authClient);
+    for(i = 0; i < userPassArray.length; i++) {
+        if(info[0] == userPassArray[i][0] && info[1] == userPassArray[i][1])
+            return (i+2);
+    }
+    return -1;
+}
 
+// Edits the profile information contained in the database
+// INPUT: "profile" is an array of length 14 containing all data to be written to the database [type ... other_languages]
+// -- Username and password remain unchanged
+async function editProfile(profile) {
+
+    // Authorize the Google Sheets API
+    let authClient = await authorize();
+
+    // Determine in which row the profile resides
+    let profiles = await getData(authClient);
+    let row = parseFloat(determineRow(profiles, profile));
+    
+    // Modify the data within that row
+    let range;
+    try {
+        range = 'Profiles!C' + row + ':P' + row;
+    } catch(err) {
+        console.error(err);
+    }
+
+    const deleteRequest = {
+        spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
+        range: range,
+        valueInputOption: 'RAW',
+        auth: authClient,
+        resource: {
+            values: profile
+        }
+    };
+
+    try {
+        const updateResponse = (await sheets.spreadsheets.values.update(deleteRequest)).data;
+        // console.log(JSON.stringify(updateResponse, null, 2));
+    } catch(err) {
+        console.error(err);
+    }
+}
+
+// Determines by username which Google Sheets row contains the requested profile to be edited
+function determineRow(profiles, profile) {
+    for(i = 0; i < profiles.length; i++) {
+        if(profiles[i][0] == profile[0])
+            return (i+2);
+    }
 }
 
 // Returns the number of profiles present in the database
@@ -101,6 +162,36 @@ async function getData(client) {
     let range;
     try {
         range = 'Profiles!A2:P' + lastRow;
+    } catch(err) {
+        console.error(err);
+    }
+
+    // Google Sheets API request to fetch cells containing profile information
+    const request = {
+        spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
+        range: range,
+        auth: client,
+    };
+
+    // Fetch the desired cells and return them as a 2D array
+    try {
+        return (await sheets.spreadsheets.values.get(request)).data.values;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// Returns a 2D array containing all username/password combinations present in the database
+async function getUserPass(client) {
+
+    // Fetch the number of profiles present in the database and compute the last filled row number
+    let numProfiles = await getNumProfiles(client).then(function(result) { return result; });
+    let lastRow = parseFloat(numProfiles) + 1;
+
+    // Define the range of the sheet to be fetched
+    let range;
+    try {
+        range = 'Profiles!A2:B' + lastRow;
     } catch(err) {
         console.error(err);
     }
