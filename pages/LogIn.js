@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
+import Link from 'next/link'
+// import { logIn } from './api/gsheets'
 
 export default function LogIn() {
   const [userName, setUserName] = useState("");
@@ -13,9 +15,9 @@ export default function LogIn() {
     /* This function validates the log-in credientials and update log-in status. */
     event.preventDefault();
 
-    // here, instead of setting if_success always as true, call a backend API to get if entered credential is valid or not
-    // Can you do this, Brendan?
+    // here, instead of setting if_success always as true, call a backend API to get if entered credential is valid or not (boolean return value)
     const if_success  = true;
+    // const if_success = await logIn(userName, password);
 
     if (if_success) {
       // store the result to the local storage
@@ -40,7 +42,7 @@ export default function LogIn() {
       <main className={styles.main_horizontal}>
         <div className={styles.half}>
           <h1 className={styles.title}>
-            [Project Name]
+            TutorMatch
           </h1>
           <p className={styles.description}>
             Start learning with your tutor!
@@ -59,7 +61,7 @@ export default function LogIn() {
               onChange={(input) => setUserName(input.target.value)}
             />
             <input
-              type="text"
+              type="password"
               placeholder="Password"
               className={styles.input_bar}
               onChange={(input) => setPassword(input.target.value)}
@@ -69,6 +71,11 @@ export default function LogIn() {
               value="Log In"
               className={styles.submit_button}
             />
+          <Link href="/SignUp">
+              <a className={styles.header_element}>
+                Or Sign Up!
+              </a>
+            </Link>
             {ifError &&
               (<span className={styles.error_message}>
                 Log-in Crediential was incorrect.

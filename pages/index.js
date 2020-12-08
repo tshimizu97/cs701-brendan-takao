@@ -2,14 +2,16 @@ import React, { useState, useEffect} from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import cn from 'classnames'
-//import { authorize, getData } from './api/gsheets'
+//import { search } from './api/gsheets'
 
 export default function Home(props) {
-  const initStates = {tutor: false, tutee: false, writing: false, math: false,
+  const initStates = {type: "tutor", tutee: false, writing: false, math: false,
                   physics: false, chemistry: false, computer_science: false,
                   other_sciences: false, spanish: false, french: false,
                   mandarin_chinese: false, other_languages: false};
   const [state, setState] = useState(initStates);
+  const [ifSearched, setIfSearched] = useState(false);
+  const [searchResults, setSearchResults] = useState();
 
   useEffect(()=>{
     // check if the user has logged in
@@ -17,25 +19,77 @@ export default function Home(props) {
       loggedIn: localStorage.getItem("loggedIn")});
   }, [])
 
-  async function search(state) {
-    // ideally don't do Google sheet anthentication twice
-    //const authClient = await authorize();
+  const onSubmit = async event => {
+    // here, instead of always setting arbtrary search_results, call a backend API to get search results given "state" (2D array return value)
+    // A VERY IMPORTANT THING -- please include the column name of the dataset; otherwise, front-end can't understand what values are!
+    const search_results = [
+      ["type", "firstname", "lastname", "age", "writing", "math",
+              "physics", "chemistry", "computer_science", "other_sciences",
+              "spanish", "french", "madarin_chinese", "other_languages", "id"],
+      ['abcdefgh', 'tutee', 'Maria', 'Santiago', '14', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0']
+    ];
+    // const search_results = await search(state);
 
-    //const data = await getData(authClient);
-    // do filtering
-    // return filtered results
+    // display the search results
+    setIfSearched(true);
+    setSearchResults(search_results);
+  }
+
+  const getData = () => {
+    const header = searchResults[0];
+    const data = searchResults.slice(1);
+
+    return data.map((row) => {
+      const name = row.slice(2, 4).join(" ");
+      const age = row[4];
+      const subjects = header.filter((key, index) => row[index] == "1").join(" ");
+      return [name, age, subjects];
+    })
+  }
+
+  const displayHeader = (header) => {
+    return header.map((key, index) => {
+      return <th key={index}>{key.toUpperCase()}</th>
+    })
+  }
+
+  const displayData = (data) => {
+    console.log(data);
+    return data.map((key, index) => {
+      const [name, age, subjects] = key;
+      return (
+        <tr key={index}>
+          <td>{name}</td>
+          <td>{age}</td>
+          <td>{subjects}</td>
+        </tr>
+      )
+    })
+  }
+
+  const DisplaySearchResults = () => {
+    return (
+      <div>
+        <table>
+          <tbody>
+            <tr>{displayHeader(["name", "age", "subjects"])}</tr>
+            {displayData(getData())}
+          </tbody>
+        </table>
+      </div>
+    )
   }
 
   return (
     <div className={styles.container}>
       <Head>
-        <title>[Project Name]</title> {/* Need to decide the project name*/}
+        <title>TutorMatch</title>
         <link rel="icon" href="/favicon.ico"/> {/* Need to chnge the icon*/}
       </Head>
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          [Project Name] {/* Need to decide the project name*/}
+          TutorMatch {/* Need to decide the project name*/}
         </h1>
 
         <p className={styles.description}>
@@ -47,13 +101,13 @@ export default function Home(props) {
             <h3>I'm looking for:</h3>
             <p>
               <button type='button'
-               onClick={() => setState({...state, tutor: (state['tutor'] === false)})}
-               className={cn({[styles.search_option]: state['tutor'] === false,
-                              [styles.option_selected]: state['tutor'] === true})}>Tutor</button>
+               onClick={() => setState({...state, type: "tutor"})}
+               className={cn({[styles.search_option]: state['type'] === "tutee",
+                              [styles.option_selected]: state['type'] === "tutor"})}>Tutor</button>
               <button type='button'
-               onClick={() => setState({...state, tutee: (state['tutee'] === false)})}
-               className={cn({[styles.search_option]: state['tutee'] === false,
-                              [styles.option_selected]: state['tutee'] === true})}>Tutee</button>
+               onClick={() => setState({...state, type: "tutee"})}
+               className={cn({[styles.search_option]: state['type'] === "tutor",
+                              [styles.option_selected]: state['type'] === "tutee"})}>Tutee</button>
             </p>
           </div>
           <div className={styles.search_element}>
@@ -101,8 +155,22 @@ export default function Home(props) {
                               [styles.option_selected]: state['other_languages'] === true})}>Other Languages</button>
             </p>
           </div>
-          <button type='button' type='submit' className={styles.search_button}>Search</button>
+          <button
+            type='button'
+            type='submit'
+            className={styles.search_button}
+            onClick={onSubmit}
+          >
+            Search
+          </button>
         </div>
+        {ifSearched &&
+          (//<span className={styles.error_message}>
+          //  Here is the search result.
+          // </span>
+           <DisplaySearchResults />
+          )
+        }
       </main>
 
       <footer className={styles.footer}>
