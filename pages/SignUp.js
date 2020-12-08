@@ -3,8 +3,11 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Link from 'next/link'
+//import { checkUsername, addProfile } from './api/gsheets'
 
 export default function SignUp() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [ifError, setIfError] = useState(false);
@@ -21,9 +24,9 @@ export default function SignUp() {
      */
     event.preventDefault();
 
-    // check if username is unique -- change "True" to the funtion call
-    // const if_unique_username = await checkUsername(userName);
+    // here, instead of setting if_unique_username always as true, call a backend API to check if userName is unique in the sysatem (boolean return value)
     const if_unique_username = true;
+    // const if_unique_username = await checkUsername(userName);
     if (if_unique_username) {
       // call a function to make a new profile into Google sheets
       // await addProfile(userName, password, states);
@@ -62,6 +65,18 @@ export default function SignUp() {
         onSubmit={onSubmit}
         >
           <div className={styles.half}>
+            <input
+              type="text"
+              placeholder="First Name"
+              className={styles.input_bar}
+              onChange={(input) => setFirstName(input.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Last Name"
+              className={styles.input_bar}
+              onChange={(input) => setLastName(input.target.value)}
+            />
             <input
               type="text"
               placeholder="User Name"

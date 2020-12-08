@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Link from 'next/link'
+// import { logIn } from './api/gsheets'
 
 export default function LogIn() {
   const [userName, setUserName] = useState("");
@@ -14,9 +15,9 @@ export default function LogIn() {
     /* This function validates the log-in credientials and update log-in status. */
     event.preventDefault();
 
-    // here, instead of setting if_success always as true, call a backend API to get if entered credential is valid or not
-    // Can you do this, Brendan?
+    // here, instead of setting if_success always as true, call a backend API to get if entered credential is valid or not (boolean return value)
     const if_success  = true;
+    // const if_success = await logIn(userName, password);
 
     if (if_success) {
       // store the result to the local storage
