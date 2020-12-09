@@ -10,6 +10,9 @@ export default function SearchResults({ results }) {
   const searchResults = JSON.parse(results);
 
   const formatData = () => {
+    // if getData returns header as well, change below definition as below
+    // const header = searchResults[0];
+    // const data = searchResults.slice(1);
     const header = ["username", "password", "type", "firstname", "lastname",
       "age", "writing", "math", "physics", "chemistry", "computer_science",
       "other_sciences", "spanish", "french", "mandarin_chinese",
