@@ -58,8 +58,11 @@ async function search(state) {
     // Select profiles that have matching subjects 
     for(i = 5; i < 15; i++) {
         for(j = 0; j < profiles.length; j++) {
-            if(searchState[i] == '1' && profiles[j][i] == '1') 
+            if(searchState[i] == '1' && profiles[j][i] == '1') {
                 results.push(profiles[j]);
+                profiles.splice(j, 1);
+                j--;
+            }
         }
     }
 
