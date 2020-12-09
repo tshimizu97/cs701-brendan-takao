@@ -9,10 +9,12 @@ function MyApp({ Component, pageProps }) {
   }
   const [userInfo, setUserInfo] = useState(initUserInfo);
 
+  pageProps = {...pageProps, userInfo, setUserInfo}
+
   return (
     <>
-      <Header userInfo = {userInfo} setUserInfo={setUserInfo} />
-      <Component userInfo = {userInfo} setUserInfo={setUserInfo} />
+      <Header {...pageProps} />
+      <Component {...pageProps} />
     </>
   )
 }

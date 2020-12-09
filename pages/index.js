@@ -1,7 +1,9 @@
-import React, { useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import cn from 'classnames'
+import Link from 'next/link'
 //import { search } from './api/gsheets'
 
 export default function Home(props) {
@@ -12,6 +14,7 @@ export default function Home(props) {
   const [state, setState] = useState(initStates);
   const [ifSearched, setIfSearched] = useState(false);
   const [searchResults, setSearchResults] = useState();
+  const router = useRouter();
 
   useEffect(()=>{
     // check if the user has logged in
@@ -22,17 +25,25 @@ export default function Home(props) {
   const onSubmit = async event => {
     // here, instead of always setting arbtrary search_results, call a backend API to get search results given "state" (2D array return value)
     // A VERY IMPORTANT THING -- please include the column name of the dataset; otherwise, front-end can't understand what values are!
-    const search_results = [
-      ["type", "firstname", "lastname", "age", "writing", "math",
-              "physics", "chemistry", "computer_science", "other_sciences",
-              "spanish", "french", "madarin_chinese", "other_languages", "id"],
-      ['abcdefgh', 'tutee', 'Maria', 'Santiago', '14', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0']
-    ];
+    localStorage.setItem('states', state);
+
+    router.push({
+      pathname: '/SearchResults',
+      query: state
+    });
+
+    // code below is not going to be run
+    //const search_results = [
+    //  ["type", "firstname", "lastname", "age", "writing", "math",
+    //          "physics", "chemistry", "computer_science", "other_sciences",
+    //          "spanish", "french", "madarin_chinese", "other_languages", "id"],
+    //  ['abcdefgh', 'tutee', 'Maria', 'Santiago', '14', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0']
+    //];
     // const search_results = await search(state);
 
     // display the search results
-    setIfSearched(true);
-    setSearchResults(search_results);
+    //setIfSearched(true);
+    //setSearchResults(search_results);
   }
 
   const getData = () => {
