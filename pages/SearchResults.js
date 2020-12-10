@@ -13,17 +13,18 @@ export default function SearchResults({ results }) {
     // if getData returns header as well, change below definition as below
     // const header = searchResults[0];
     // const data = searchResults.slice(1);
-    const header = ["username", "password", "type", "firstname", "lastname",
+    const header = ["email", "password", "type", "firstname", "lastname",
       "age", "writing", "math", "physics", "chemistry", "computer_science",
       "other_sciences", "spanish", "french", "mandarin_chinese",
       "other_languages"]
     const data = searchResults;
 
     return data.map((row) => {
+      const email = row[0]
       const name = row.slice(3, 5).join(" ");
       const age = row[5];
       const subjects = header.filter((key, index) => row[index] == "1").join(", ");
-      return [name, age, subjects];
+      return [name, age, subjects, email];
     })
   }
 
@@ -35,12 +36,13 @@ export default function SearchResults({ results }) {
 
   const displayData = (data) => {
     return data.map((key, index) => {
-      const [name, age, subjects] = key;
+      const [name, age, subjects, email] = key;
       return (
         <tr key={index}>
           <td>{name}</td>
           <td>{age}</td>
           <td>{subjects}</td>
+          <td>{email}</td>
         </tr>
       )
     })
@@ -51,7 +53,7 @@ export default function SearchResults({ results }) {
       <div>
         <table>
           <tbody>
-            <tr>{displayHeader(["name", "age", "subjects"])}</tr>
+            <tr>{displayHeader(["name", "age", "subjects", "email"])}</tr>
             {displayData(formatData())}
           </tbody>
         </table>

@@ -4,9 +4,11 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import cn from 'classnames'
 import Link from 'next/link'
+const {google} = require('googleapis');
+const sheets = google.sheets('v4');
+const keys = require('../keys.json');
 
 export default function LogInResults(props) {
-  console.log(props);
   const router = useRouter();
 
   useEffect(()=>{
@@ -15,6 +17,8 @@ export default function LogInResults(props) {
       user: props.user_input.userName,
       loggedIn: props.if_success});
   }, [])
+
+  console.log(props)
 
   if (props.if_success) {
     // store the result to the local storage
@@ -25,6 +29,23 @@ export default function LogInResults(props) {
     //setIfError(true);
     return (<>Log-in failure. Go back to the log-in page.</>)
   }
+}
+
+async function getNumProfiles(client) {
+
+    // Google Sheets API request for cell containing number of profiles
+    const request = {
+        spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
+        range: 'Profiles!Q1:Q1',
+        auth: client,
+    };
+
+    // Fetch the desired cell and return its value as a number
+    try {
+        return (await sheets.spreadsheets.values.get(request)).data.values[0][0];
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 export async function getServerSideProps(context) {
@@ -50,7 +71,7 @@ export async function getServerSideProps(context) {
   async function validateUser(info) {
       let authClient = await authorize();
       let userPassArray = await getUserPass(authClient);
-      for(i = 0; i < userPassArray.length; i++) {
+      for(let i = 0; i < userPassArray.length; i++) {
           if(info[0] == userPassArray[i][0] && info[1] == userPassArray[i][1])
               return (i+2);
       }
@@ -89,7 +110,8 @@ export async function getServerSideProps(context) {
 
   let if_success = true;
   // main code
-  if (validateUser(info) == -1) {
+  const val_ret = await validateUser(info);
+  if (val_ret == -1) {
     if_success = false;
   }
 
