@@ -16,11 +16,12 @@ export default function Home(props) {
   const [searchResults, setSearchResults] = useState();
   const router = useRouter();
 
-  useEffect(()=>{
+  //useEffect(()=>{
     // check if the user has logged in
-    props.setUserInfo({...props.userInfo,
-      loggedIn: localStorage.getItem("loggedIn")});
-  }, [])
+  //  props.setUserInfo({...props.userInfo,
+  //    user: localStorage.getItem("user"),
+  //    loggedIn: localStorage.getItem("loggedIn")});
+  //}, [])
 
   const onSubmit = async event => {
     // here, instead of always setting arbtrary search_results, call a backend API to get search results given "state" (2D array return value)
