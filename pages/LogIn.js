@@ -15,16 +15,21 @@ export default function LogIn() {
     /* This function validates the log-in credientials and update log-in status. */
     event.preventDefault();
 
-    localStorage.setItem('user', userName);
-
-    router.push({
-      pathname: '/LogInResults',
-      query: {userName: userName, password: password}
-    });
-
     // here, instead of setting if_success always as true, call a backend API to get if entered credential is valid or not (boolean return value)
-    //const if_success  = true;
+    const if_success  = true;
     // const if_success = await logIn(userName, password);
+
+    if (if_success) {
+      // store the result to the local storage
+      localStorage.setItem('loggedIn', if_success);
+      localStorage.setItem('user', userName);
+      // redirect to the search page
+      router.push('/');
+    }
+    else {
+      // display the error message
+      setIfError(true);
+    }
   }
 
   return (
