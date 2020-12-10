@@ -51,6 +51,15 @@ export default function Profile(props) {
     //setSearchResults(search_results);
   }
 
+    const onDelete = async event => {
+        localStorage.setItem('states', state);
+
+        router.push({
+            pathname: '/DeleteResults',
+            query: state
+        });
+    }
+
   const getData = () => {
     const header = searchResults[0];
     const data = searchResults.slice(1);
@@ -179,6 +188,14 @@ export default function Profile(props) {
           >
             Update Profile 
           </button>
+        <button
+            type='button'
+            type='submit'
+            className={styles.search_button}
+            onClick={onDelete}
+        >
+           Delete Profile
+        </button>
         </div>
         {ifSearched &&
           (//<span className={styles.error_message}>

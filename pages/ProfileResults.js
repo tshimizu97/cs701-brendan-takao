@@ -7,17 +7,17 @@ const sheets = google.sheets('v4');
 const keys = require('../keys.json');
 
 export default function ProfileResults({ results }) {
-    // const searchResults = JSON.parse(results);
+
     const success = JSON.parse(results);
 
     const displayHeader = (header) => {
-    return header.map((key, index) => {
-        return <th key={index}>{key.toUpperCase()}</th>
-    })
+        return header.map((key, index) => {
+            return <th key={index}>{key.toUpperCase()}</th>
+        })
     }
 
     const DisplayProfileEditResults = (success) => {
-    if(success) {
+    if(success.success) {
         return (
             <div>
                 <Head>
@@ -60,44 +60,51 @@ export default function ProfileResults({ results }) {
     }
 
     return (
-     <DisplayProfileEditResults success />
+     <DisplayProfileEditResults success={success} />
     )
-    }
+}
 
 export async function getServerSideProps(context) {
+
     const state = context.query;
-    // Need to have "state" be the new profile with edits made
-    //
+    let updates = toArray(state);
+    
+    let authClient = await authorize();
+    let profiles = await getData(authClient);
 
-    // Parse new profile into correct row format
-    // Want variable "profile" to be this array of length 16
+    let username = 'tshimizu@middlebury.edu';
+    let profile = getProfileByUsername(profiles, username);
 
+    let userPass = [profile[0], profile[1]];
+    updates = userPass.concat(updates);
+    
+    for(let i = 3; i <= 5; i++)
+        updates[i] = profile[i];
 
-    // TEST
-    let profile = [['pphilbin@middlebury.edu','abcde','tutor','Patrick','Philbin','19','0','1','1','0','1','0','1','0','1','0']];
+    let update = [updates];
 
     // Push the new profile to the database
-    let results = await editProfile(profile);
+    let results = await editProfile(authClient, update);
 
     // Return true or false to the page as props
-    console.log('results:');
-    console.log(results);
     results = JSON.stringify(results);
     return { props: { results }}
 
+    function getProfileByUsername(profiles, username) {
+        for(let i = 0; i < profiles.length; i++) {
+            if(profiles[i][0] == username)
+                return profiles[i];
+        }
+    }
+
     // Edits the profile information contained in the database
-    // INPUT: "profile" is an array of length 16 containing all data to be written to the database [username ... other_languages]
-    // -- Username and password remain unchanged
-    async function editProfile(profile) {
+    async function editProfile(client, profile) {
 
         // Boolean to track success
         let success = true;
 
-        // Authorize the Google Sheets API
-        let authClient = await authorize();
-
         // Determine in which row the profile resides
-        let profiles = await getData(authClient);
+        let profiles = await getData(client);
         let row = parseFloat(determineRow(profiles, profile));
 
         // Slice off the username and password, as they won't be edited
@@ -116,7 +123,7 @@ export async function getServerSideProps(context) {
             spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
             range: range,
             valueInputOption: 'RAW',
-            auth: authClient,
+            auth: client,
             resource: {
                 values: profile
             }
@@ -128,18 +135,6 @@ export async function getServerSideProps(context) {
             console.error(err);
             success = false;
         }
-
-        /*
-        let test1 = { success };
-        console.log('Test1:');
-        console.log(test1);
-        let test2 = JSON.stringify(test1);
-        console.log('Test2:');
-        console.log(test2);
-        let test3 = JSON.parse({test2});
-        console.log('Test3:');
-        console.log(test3);
-        */
 
         return success;
     }
@@ -158,51 +153,80 @@ export async function getServerSideProps(context) {
       return authClient;
   }
 
-  // Returns a 2D array containing all profiles present in the database
-  async function getData(client) {
-    // Fetch the number of profiles present in the database and compute the last filled row number
-    let numProfiles = await getNumProfiles(client).then(function(result) { return result; });
-    let lastRow = parseFloat(numProfiles) + 1;
+    // Returns a 2D array containing all profiles present in the database
+    async function getData(client) {
+        // Fetch the number of profiles present in the database and compute the last filled row number
+        let numProfiles = await getNumProfiles(client).then(function(result) { return result; });
+        let lastRow = parseFloat(numProfiles) + 1;
 
-    // Define the range of the sheet to be fetched
-    let range;
-    try {
-        range = 'Profiles!A2:P' + lastRow;
-    } catch(err) {
-        console.error(err);
-    }
+        // Define the range of the sheet to be fetched
+        let range;
+        try {
+            range = 'Profiles!A2:P' + lastRow;
+        } catch(err) {
+            console.error(err);
+        }
 
-    // Google Sheets API request to fetch cells containing profile information
-    const request = {
-        spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
-        range: range,
-        auth: client,
-    };
+        // Google Sheets API request to fetch cells containing profile information
+        const request = {
+            spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
+            range: range,
+            auth: client,
+        };
 
-    // Fetch the desired cells and return them as a 2D array
-    try {
-        return (await sheets.spreadsheets.values.get(request)).data.values;
-    } catch (err) {
-        console.error(err);
-    }
+        // Fetch the desired cells and return them as a 2D array
+        try {
+            return (await sheets.spreadsheets.values.get(request)).data.values;
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     // Returns the number of profiles present in the database
     async function getNumProfiles(client) {
 
-      // Google Sheets API request for cell containing number of profiles
-      const request = {
-          spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
-          range: 'Profiles!Q1:Q1',
-          auth: client,
-      };
+        // Google Sheets API request for cell containing number of profiles
+        const request = {
+            spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
+            range: 'Profiles!Q1:Q1',
+            auth: client,
+        };
 
-      // Fetch the desired cell and return its value as a number
-      try {
-          return (await sheets.spreadsheets.values.get(request)).data.values[0][0];
-      } catch (err) {
-          console.error(err);
-      }
+        // Fetch the desired cell and return its value as a number
+        try {
+            return (await sheets.spreadsheets.values.get(request)).data.values[0][0];
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function getUserPass(client) {
+
+        // Fetch the number of profiles present in the database and compute the last filled row number
+        let numProfiles = await getNumProfiles(client).then(function(result) { return result; });
+        let lastRow = parseFloat(numProfiles) + 1;
+
+        // Define the range of the sheet to be fetched
+        let range;
+        try {
+            range = 'Profiles!A2:B' + lastRow;
+        } catch(err) {
+            console.error(err);
+        }
+
+        // Google Sheets API request to fetch cells containing profile information
+        const request = {
+            spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
+            range: range,
+            auth: client,
+        };
+
+        // Fetch the desired cells and return them as a 2D array
+        try {
+            return (await sheets.spreadsheets.values.get(request)).data.values;
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     // Determines which Google Sheets row contains the specified profile
@@ -211,7 +235,31 @@ export async function getServerSideProps(context) {
             if(profiles[i][0] == profile[0][0])
                 return (i+2);
         }
-        return 'test';
+        return 'fail';
     }
 
+    function toArray(obj) {
+        let result = [];
+        result.push(state.type);
+        result.push('');
+        result.push('');
+        result.push('');
+        result.push(asInt(state.writing));
+        result.push(asInt(state.math));
+        result.push(asInt(state.physics));
+        result.push(asInt(state.chemistry));
+        result.push(asInt(state.computer_science));
+        result.push(asInt(state.other_sciences));
+        result.push(asInt(state.spanish));
+        result.push(asInt(state.french));
+        result.push(asInt(state.mandarin_chinese));
+        result.push(asInt(state.other_languages));
+        return result;
+    }
+
+    function asInt(string) {
+        if(string == 'true')
+            return '1';
+        return '0';
+    }
 }
