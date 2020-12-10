@@ -112,8 +112,8 @@ export async function getServerSideProps(context) {
   }
 
   // If "bool" is true, return '1'. If not, return '0';
-  function boolAsInt(bool) {
-      if(bool)
+  function asInt(string) {
+      if(string == 'true')
           return '1';
       return '0';
   }
@@ -144,16 +144,16 @@ export async function getServerSideProps(context) {
   searchState.push(state.firstname);
   searchState.push(state.lastname);
   searchState.push('');
-  searchState.push(boolAsInt(state.writing));
-  searchState.push(boolAsInt(state.math));
-  searchState.push(boolAsInt(state.physics));
-  searchState.push(boolAsInt(state.chemistry));
-  searchState.push(boolAsInt(state.computer_science));
-  searchState.push(boolAsInt(state.other_sciences));
-  searchState.push(boolAsInt(state.spanish));
-  searchState.push(boolAsInt(state.french));
-  searchState.push(boolAsInt(state.mandarin_chinese));
-  searchState.push(boolAsInt(state.other_languages));
+  searchState.push(asInt(state.writing));
+  searchState.push(asInt(state.math));
+  searchState.push(asInt(state.physics));
+  searchState.push(asInt(state.chemistry));
+  searchState.push(asInt(state.computer_science));
+  searchState.push(asInt(state.other_sciences));
+  searchState.push(asInt(state.spanish));
+  searchState.push(asInt(state.french));
+  searchState.push(asInt(state.mandarin_chinese));
+  searchState.push(asInt(state.other_languages));
 
   // Authorize API access and fetch all profiles
   let authClient = await authorize();
@@ -183,6 +183,6 @@ export async function getServerSideProps(context) {
   // change format to send results to the client
   results = JSON.stringify(results)
 
-  // Return the final set of matching profiles as a 2D array
+  // Return the final set of matching profiles
   return { props: { results }}
 }
