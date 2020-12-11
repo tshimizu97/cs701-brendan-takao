@@ -19,7 +19,12 @@ export default function Profile(props) {
   const [searchResults, setSearchResults] = useState();
   const router = useRouter();
 
-  console.log(props)
+  useEffect(()=>{
+    // get user's data
+    const profile = JSON.parse(props.profile);
+
+    setState(profile);
+  }, [])
 
   const onSubmit = async event => {
     // here, instead of always setting arbtrary search_results, call a backend API to get search results given "state" (2D array return value)
@@ -30,19 +35,6 @@ export default function Profile(props) {
       pathname: '/ProfileResults',
       query: state
     });
-
-    // code below is not going to be run
-    //const search_results = [
-    //  ["type", "firstname", "lastname", "age", "writing", "math",
-    //          "physics", "chemistry", "computer_science", "other_sciences",
-    //          "spanish", "french", "madarin_chinese", "other_languages", "id"],
-    //  ['abcdefgh', 'tutee', 'Maria', 'Santiago', '14', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0']
-    //];
-    // const search_results = await search(state);
-
-    // display the search results
-    //setIfSearched(true);
-    //setSearchResults(search_results);
   }
 
   const onDelete = async event => {
@@ -73,7 +65,6 @@ export default function Profile(props) {
   }
 
   const displayData = (data) => {
-    console.log(data);
     return data.map((key, index) => {
       const [name, age, subjects] = key;
       return (
@@ -213,26 +204,46 @@ export default function Profile(props) {
 }
 
 export async function getServerSideProps(context) {
-
-    // Determine which user we are logged in as
-    let username = 'bphilbin@middlebury.edu';
-
+    const username = context.query.username;
 
     // Pull the profile we are trying to edit
     // "username" contains the username we are logged into
     let authClient = await authorize();
     let profiles = await getData(authClient);
+
     let profile;
-    for(var i = 0; i < profiles.length; i++) {
-        if(profiles[i][0] = username) {
-            profile = profiles[i][0];
+    for (let i = 0; i < profiles.length; i++) {
+        if (profiles[i][0] == username) {
+            profile = profiles[i];
             break;
         }
     }
 
+    const subjects = profile.slice(6)
+    const state_values = [profile[2], ...subjects]
+
+    const state_header = ["type", "writing", "math", "physics", "chemistry",
+      "computer_science", "other_sciences", "spanish", "french",
+      "mandarin_chinese", "other_languages"]
+
+    profile = {};
+    state_header.map((e, i) => {
+      if (state_values[i] == '1') {
+        profile[e] = true
+      }
+      else if (state_values[i] == '0') {
+        profile[e] = false
+      }
+      else {
+        profile[e] = state_values[i]
+      }
+    })
+
+    console.log(profile)
+
     // Return that profile to the page as props
     profile = JSON.stringify(profile);
-    return { props: {profile} };
+    return { props: { profile } };
 
     /* Auxiliary Functions */
 
@@ -298,6 +309,4 @@ export async function getServerSideProps(context) {
         }
         return authClient;
     }
-
-
 }

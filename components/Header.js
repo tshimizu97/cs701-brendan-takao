@@ -10,14 +10,6 @@ export default function Header(props) {
     localStorage.clear();
   }
 
-  useEffect(()=>{
-    const storaged = {
-      loggedIn: localStorage.getItem("loggedIn"),
-      user: localStorage.getItem("user")
-    }
-    props.setUserInfo(storaged);
-  }, [])
-
   if (props.userInfo.loggedIn) {
     // if logged in
     return (
@@ -30,7 +22,11 @@ export default function Header(props) {
             />
           </a>
         </Link>
-        <Link href="/MyProfile">
+        <Link
+          href={{
+            pathname: "/MyProfile",
+            query: { username: localStorage.getItem("user")}
+          }}>
           <a className={styles.header_element} >
             My Profile
           </a>
