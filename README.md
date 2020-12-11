@@ -1,5 +1,5 @@
-# TutorMatch
-## Middlebury College, Computer Science CSCI 701 (Fall 2020)
+# TutorMatch Project
+### Middlebury College, Computer Science CSCI 701 (Fall 2020)
 
 ## About
 This is a final project done by Brendan Philbin and Takao Shimizu as a part of
@@ -59,4 +59,4 @@ For further details about the project, read [our paper](https://drive.google.com
 Also, you might find papers cited in the above paper find interesting.
 
 ### Authors
-Brendan Philbin and Takao Shimizu
+[Brendan Philbin](https://github.com/brendanphilbin) and [Takao Shimizu](https://github.com/tshimizu97)
