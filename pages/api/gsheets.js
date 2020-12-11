@@ -90,8 +90,20 @@ async function validateUser(info) {
     return -1;
 }
 
+// Retrieves a profile with a provided username
+async function getProfile(username) {
+    let authClient = await authorize();
+    let profiles = await getData(authClient);
+    let result;
+    for(i = 0; i < profiles.length; i++) {
+        if(profiles[i][0] == username)
+            result = profiles[i];
+    }
+    return result;
+}
+
 // Edits the profile information contained in the database
-// INPUT: "profile" is an array of length 14 containing all data to be written to the database [type ... other_languages]
+// INPUT: "profile" is an array of length 16 containing all data to be written to the database [username ... other_languages]
 // -- Username and password remain unchanged
 async function editProfile(profile) {
 
@@ -105,7 +117,7 @@ async function editProfile(profile) {
     // Modify the data within that row
     let range;
     try {
-        range = 'Profiles!C' + row + ':P' + row;
+        range = 'Profiles!A' + row + ':P' + row;
     } catch(err) {
         console.error(err);
     }

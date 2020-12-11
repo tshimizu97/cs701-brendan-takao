@@ -30,11 +30,11 @@ export default function Header(props) {
             />
           </a>
         </Link>
-        <button
-          className={styles.header_text}
-        >
-          My Profile
-        </button>
+        <Link href="/MyProfile">
+          <a className={styles.header_element} >
+            My Profile
+          </a>
+          </Link>
         <button
           className={styles.header_text}
           onClick={logOut}
