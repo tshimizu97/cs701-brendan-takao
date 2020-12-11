@@ -18,8 +18,6 @@ export default function LogInResults(props) {
       loggedIn: props.if_success});
   }, [])
 
-  console.log(props)
-
   if (props.if_success) {
     // store the result to the local storage
     return (<>Log-in Sucess! Go back to the search page!</>)
