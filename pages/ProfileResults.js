@@ -6,7 +6,9 @@ const {google} = require('googleapis');
 const sheets = google.sheets('v4');
 const keys = require('../keys.json');
 
-export default function ProfileResults({ results }) {
+export default function ProfileResults(props) {
+    console.log(props)
+    const results = props.results;
 
     const success = JSON.parse(results);
 
@@ -31,7 +33,7 @@ export default function ProfileResults({ results }) {
                     </h1>
 
                     <p className={styles.description}>
-                        Profile edit successful. 
+                        Profile edit successful.
                     </p>
                </main>
            </div>
@@ -51,7 +53,7 @@ export default function ProfileResults({ results }) {
                 </h1>
 
                 <p className={styles.description}>
-                  Profile edit was unsuccessful, please try again. 
+                  Profile edit was unsuccessful, please try again.
                 </p>
                </main>
            </div>
@@ -68,7 +70,7 @@ export async function getServerSideProps(context) {
 
     const state = context.query;
     let updates = toArray(state);
-    
+
     let authClient = await authorize();
     let profiles = await getData(authClient);
 
@@ -77,7 +79,7 @@ export async function getServerSideProps(context) {
 
     let userPass = [profile[0], profile[1]];
     updates = userPass.concat(updates);
-    
+
     for(let i = 3; i <= 5; i++)
         updates[i] = profile[i];
 
@@ -109,7 +111,7 @@ export async function getServerSideProps(context) {
 
         // Slice off the username and password, as they won't be edited
         profile[0] = profile[0].slice(2,16);
-        
+
         // Modify the data within that row
         let range;
         try {
