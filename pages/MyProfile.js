@@ -8,8 +8,6 @@ const {google} = require('googleapis');
 const sheets = google.sheets('v4');
 const keys = require('../keys.json');
 
-
-
 export default function Profile(props) {
   /* This needs to be returned from the getServerSideProps() */
   const initStates = {type: "tutor", writing: false, math: false,
@@ -21,11 +19,7 @@ export default function Profile(props) {
   const [searchResults, setSearchResults] = useState();
   const router = useRouter();
 
-  useEffect(()=>{
-    // check if the user has logged in
-    props.setUserInfo({...props.userInfo,
-      loggedIn: localStorage.getItem("loggedIn")});
-  }, [])
+  console.log(props)
 
   const onSubmit = async event => {
     // here, instead of always setting arbtrary search_results, call a backend API to get search results given "state" (2D array return value)
@@ -51,7 +45,7 @@ export default function Profile(props) {
     //setSearchResults(search_results);
   }
 
-    const onDelete = async event => {
+  const onDelete = async event => {
         localStorage.setItem('states', state);
 
         router.push({
@@ -118,7 +112,7 @@ export default function Profile(props) {
         </h1>
 
         <p className={styles.description}>
-          Edit Your Profile 
+          Edit Your Profile
         </p>
 
         <div className={styles.search_box}>
@@ -186,7 +180,7 @@ export default function Profile(props) {
             className={styles.search_button}
             onClick={onSubmit}
           >
-            Update Profile 
+            Update Profile
           </button>
         <button
             type='button'
@@ -225,7 +219,7 @@ export async function getServerSideProps(context) {
 
 
     // Pull the profile we are trying to edit
-    // "username" contains the username we are logged into 
+    // "username" contains the username we are logged into
     let authClient = await authorize();
     let profiles = await getData(authClient);
     let profile;
@@ -237,14 +231,14 @@ export async function getServerSideProps(context) {
     }
 
     // Return that profile to the page as props
-    profile = JSON.stringify(profile); 
+    profile = JSON.stringify(profile);
     return { props: {profile} };
 
     /* Auxiliary Functions */
 
     // Returns the number of profiles present in the database
     async function getNumProfiles(client) {
-   
+
         // Google Sheets API request for cell containing number of profiles
         const request = {
             spreadsheetId: '1MiEC9k_ZmwmBcEamwls7ES5ESL_0fGI7mcgnSU8sDs4',
